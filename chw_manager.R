@@ -54,3 +54,27 @@ chw_df <- as.data.frame(chw_table)
 unique_visits <- table(last42DaysUniqueVisits$form.meta.username)
 unique_visits <- as.data.frame(unique_visits)
 final <- merge(chw_df, unique_visits, by = c("Var1"))
+
+
+################################################################################
+#Number of births occurred during the time period
+################################################################################
+
+#Numerator
+#Filter for "child" in type
+children <- case_list[case_list$type == "child",]
+children$d.dob_calc <- as.Date(children$d.dob_calc)
+#Filter for (d.dob_calc)  dates in month of reporting, including (d.dob) in month of interest when (d.dob_calc) is blank 
+
+
+################################################################################
+#Proportion of Households receiving on-time routine visit within last 90 DAYS
+################################################################################
+hvisit <- read.csv("HH_Visit_2014-08-11.csv", )
+hvisit$form.meta.timeEnd <- as.Date(hvisit$form.meta.timeEnd)
+reportingPeriodStart <- reportingPeriodEnd - 90
+hhVisits90Days <- hvisit[hvisit$form.meta.timeEnd >= reportingPeriodStart & 
+                             hvisit$form.meta.timeEnd <= reportingPeriodEnd,]
+uniqueHHVisits90Days <- hhVisits90Days[!duplicated(hhVisits90Days$form.case..case_id),]
+uniqueCHWVisits <- table(uniqueHHVisits90Days$form.meta.username)
+nauniqueCHWVisits
